@@ -1,0 +1,27 @@
+{
+  "name": "@gatsby-plugin-multilingual/translations-loader-fs",
+  "version": "0.1.1-alpha.0",
+  "description": "Add translation nodes to 'gatsby-plugin-multilingual' from a custom directory.",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin-multilingual"
+  ],
+  "author": "Ruslan Vasiliev <ervasive@gmail.com>",
+  "homepage": "https://github.com/ervasive/gatsby-multilingual/tree/master/packages/translations-loader-fs#readme",
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "github.com/ervasive/gatsby-multilingual.git",
+    "directory": "packages/translations-loader-fs"
+  },
+  "bugs": {
+    "url": "https://github.com/ervasive/gatsby-multilingual/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@gatsby-plugin-multilingual/base": "^0.1.1-alpha.0"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@gatsby-plugin-multilingual/base",
+  "version": "0.1.1-alpha.0",
+  "description": "A modular solution for creating multilingual Gatsby projects.",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-plugin-multilingual"
+  ],
+  "author": "Ruslan Vasiliev <ervasive@gmail.com>",
+  "homepage": "https://github.com/ervasive/gatsby-multilingual/tree/master/packages/base#readme",
+  "license": "MIT",
+  "main": "index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "github.com/ervasive/gatsby-multilingual.git",
+    "directory": "packages/base"
+  },
+  "bugs": {
+    "url": "https://github.com/ervasive/gatsby-multilingual/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "gatsby": "^2.19.16",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}

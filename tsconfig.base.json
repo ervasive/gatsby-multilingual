@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "commonjs",
+        "jsx": "react",
+        "declaration": true,
+        "declarationMap": true,
+        "composite": true,
+        "strict": true,
+        "esModuleInterop": true
+    }
+}
