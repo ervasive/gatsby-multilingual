@@ -9,6 +9,7 @@
   },
   "plugins": [
     "@typescript-eslint",
+    "eslint-plugin-tsdoc",
     "react-hooks"
   ],
   "extends": [
@@ -23,6 +24,9 @@
     "browser": true,
     "es6": true,
     "node": true
+  },
+  "rules": {
+    "tsdoc/syntax": "warn"
   },
   "overrides": []
 }
