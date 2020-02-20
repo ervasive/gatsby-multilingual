@@ -1,0 +1,23 @@
+{
+  "name": "@gatsby-plugin-multilingual/example-translations-loader-fs",
+  "private": true,
+  "description": "An example that demonstrates how to add translation nodes with different priority values (default and custom).",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+  },
+  "dependencies": {
+    "@gatsby-plugin-multilingual/translations-loader-fs": "0.1.1-alpha.0",
+    "gatsby": "^2.19.7",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {}
+}

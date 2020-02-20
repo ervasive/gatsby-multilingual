@@ -10,7 +10,8 @@
     "ts:watch": "tsc --build --watch"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "devDependencies": {
     "@types/chokidar": "^2.1.3",
