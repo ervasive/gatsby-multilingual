@@ -4,7 +4,17 @@
     "rootDir": "./src",
     "outDir": "./dist",
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/**/__tests__/**/*"],
-  "references": [{ "path": "../base" }]
+  "include": [
+    "src/**/*",
+    "./gatsby-node.js",
+    "./index.js"
+  ],
+  "exclude": [
+    "src/**/__tests__/**/*"
+  ],
+  "references": [
+    {
+      "path": "../base"
+    }
+  ]
 }

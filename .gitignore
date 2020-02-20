@@ -27,3 +27,5 @@ reports/
 
 # compiled assets
 dist/
+
+.eslintcache
