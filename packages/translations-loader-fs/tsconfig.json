@@ -5,9 +5,7 @@
     "outDir": "./dist",
   },
   "include": [
-    "src/**/*",
-    "./gatsby-node.js",
-    "./index.js"
+    "src/**/*"
   ],
   "exclude": [
     "src/**/__tests__/**/*"

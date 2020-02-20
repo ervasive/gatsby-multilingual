@@ -1,23 +1,17 @@
 {
   "root": true,
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": [
-      "./tsconfig.json",
-      "./packages/**/tsconfig.json"
-    ]
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
   },
+  "parser": "babel-eslint",
   "plugins": [
-    "@typescript-eslint",
-    "eslint-plugin-tsdoc",
     "react-hooks"
   ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
   "settings": {
@@ -25,13 +19,25 @@
       "version": "detect"
     }
   },
-  "env": {
-    "browser": true,
-    "es6": true,
-    "node": true
-  },
-  "rules": {
-    "tsdoc/syntax": "warn"
-  },
-  "overrides": []
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "plugins": [
+        "@typescript-eslint",
+        "eslint-plugin-tsdoc"
+      ],
+      "extends": [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint"
+      ],
+      "rules": {
+        "tsdoc/syntax": "warn"
+      }
+    }
+  ]
 }
