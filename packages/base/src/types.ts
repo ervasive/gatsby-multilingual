@@ -1,10 +1,14 @@
 import { Node, NodeInput, PluginOptions } from 'gatsby'
-import { ExtractedMessageDescriptor } from 'babel-plugin-react-intl'
 
 /**
- * ExtractedMessageDescriptor alias
+ * A bit strictier version of ExtractedMessageDescriptor (from babel-plugin-intl) type
  */
-export type Message = ExtractedMessageDescriptor
+export interface Message {
+  id: string
+  defaultMessage: string
+  file: string
+  description?: string
+}
 
 /**
  * Message input node provided to "createNode" gatsby action
