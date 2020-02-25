@@ -7,11 +7,16 @@ import {
 import { watch } from 'chokidar'
 import { messageTypedef, translationTypedef } from './graphql-types'
 import { validatePluginInstance } from './utils'
-import { messageDescriptorSchema } from './schemas'
+import {
+  translationNodeSchema,
+  messageNodeSchema,
+  messageDescriptorSchema,
+} from './schemas'
 import {
   PLUGIN_NAME,
   EXTRACTED_MESSAGES_DIR,
   MESSAGE_NODE_TYPENAME,
+  TRANSLATION_NODE_TYPENAME,
 } from './constants'
 import { GatsbyStorePlugin, Message, MessageNodeInput } from './types'
 
@@ -121,7 +126,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async ({
               [
                 `[${PLUGIN_NAME}] Invalid message descriptor found in file "${filepath}":`,
                 JSON.stringify(item, null, 2),
-                `The following errors found:`,
+                `Validation errors:`,
                 error.details.map(({ message }) => `- ${message}`).join('\n'),
               ].join('\n'),
             )
@@ -171,4 +176,42 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async ({
       addNodes(filepath)
     })
     .on('unlink', removeNodes)
+}
+
+/**
+ * Validate message and translation nodes added to the store
+ */
+export const onCreateNode: GatsbyNode['onCreateNode'] = async ({
+  node,
+  reporter,
+}) => {
+  if (node.internal.type === MESSAGE_NODE_TYPENAME) {
+    const { error } = messageNodeSchema.required().validate(node)
+
+    if (error) {
+      reporter.panicOnBuild(
+        [
+          `[${PLUGIN_NAME}] Invalid message node found:`,
+          JSON.stringify(node, null, 2),
+          `Validation errors:`,
+          error.details.map(({ message }) => `- ${message}`).join('\n'),
+        ].join('\n'),
+      )
+    }
+  }
+
+  if (node.internal.type === TRANSLATION_NODE_TYPENAME) {
+    const { error } = translationNodeSchema.required().validate(node)
+
+    if (error) {
+      reporter.panicOnBuild(
+        [
+          `[${PLUGIN_NAME}] Invalid translation node found:`,
+          JSON.stringify(node, null, 2),
+          `Validation errors:`,
+          error.details.map(({ message }) => `- ${message}`).join('\n'),
+        ].join('\n'),
+      )
+    }
+  }
 }
