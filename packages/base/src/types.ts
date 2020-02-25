@@ -57,3 +57,12 @@ export interface GatsbyStorePlugin {
   ssrAPIs: string[]
   pluginFilepath: string
 }
+
+/**
+ * Plugin options
+ */
+export interface Options extends PluginOptions {
+  defaultLanguage: string
+  availableLanguages: string[]
+  includeDefaultLanguageInURL: boolean
+}

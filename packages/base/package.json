@@ -24,7 +24,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@hapi/joi": "^17.1.0"
+    "@hapi/joi": "^17.1.0",
+    "lodash": "^4.17.15",
+    "true-myth": "^4.0.0"
   },
   "peerDependencies": {
     "gatsby": "^2.19.17",

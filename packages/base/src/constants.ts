@@ -8,7 +8,9 @@ export const TRANSLATION_NODE_TYPENAME = 'GPMLTranslation'
  */
 export const MESSAGE_NODE_TYPENAME = 'GPMLMessage'
 
-/**
- * Unique name for translations nodes
- */
-export const TRANSLATION_NODE_TYPENAME = 'GPMLTranslation'
+export const DEFAULT_OPTIONS: Options = {
+  defaultLanguage: 'en',
+  availableLanguages: ['en'],
+  includeDefaultLanguageInURL: false,
+  plugins: [],
+}
