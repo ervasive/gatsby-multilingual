@@ -1,4 +1,6 @@
 import path from 'path'
+import { Options } from './types'
+
 export const PLUGIN_NAME = '@gatsby-plugin-multilingual/base'
 export const PREFIX = '__gpml'
 export const MESSAGE_NODE_TYPENAME = 'GPMLMessage'
