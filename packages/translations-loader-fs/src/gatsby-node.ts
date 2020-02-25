@@ -8,6 +8,7 @@ import {
   TranslationNodeInput,
   Translations,
   translationsSchema,
+  PLUGIN_NAME as BASE_PLUGIN_NAME,
 } from '@gatsby-plugin-multilingual/base'
 import { validatePluginInstance, getOptions } from './utils'
 import { PLUGIN_NAME } from './constants'
@@ -42,8 +43,6 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   const pathResolved = path.resolve(options.path)
   const managedNodes: Map<string, string[]> = new Map()
 
-  actions.createTypes(translationTypedef)
-
   /**
    * Remove previously created translation nodes from gatsby
    * @param filepath - Filepath to file to process
@@ -56,7 +55,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
         const node = getNode(id)
 
         if (node) {
-          actions.deleteNode({ node })
+          actions.deleteNode({ node }, { name: BASE_PLUGIN_NAME })
         }
       })
 
@@ -95,6 +94,8 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
           reporter.panicOnBuild(
             `[${PLUGIN_NAME}] Invalid translations format: ${filepath}`,
           )
+
+          return
         }
 
         const translations = value as Translations
@@ -114,7 +115,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
             priority: options.priority,
           }
 
-          actions.createNode(node)
+          actions.createNode(node, { name: BASE_PLUGIN_NAME })
           fileNodesIds.push(nodeId)
         })
 

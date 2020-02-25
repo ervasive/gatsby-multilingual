@@ -1,6 +1,4 @@
-/**
- * Unique pugin prefix string
- */
+export const PLUGIN_NAME = '@gatsby-plugin-multilingual/base'
 export const PREFIX = '__gpml'
 
 /**
