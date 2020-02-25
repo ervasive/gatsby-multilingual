@@ -37,6 +37,13 @@ export interface TranslationNodeInput extends NodeInput {
 export type TranslationNode = Node & TranslationNodeInput
 
 /**
+ * Translations collection
+ */
+export interface Translations {
+  [id: string]: string
+}
+
+/**
  * Plugin from the gatsby store
  */
 export interface GatsbyStorePlugin {

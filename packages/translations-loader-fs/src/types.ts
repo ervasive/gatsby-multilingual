@@ -1,11 +1,5 @@
 import { PluginOptions } from 'gatsby'
-
-/**
- * Translation
- */
-export interface Translations {
-  [id: string]: string
-}
+import { Translations } from '@gatsby-plugin-multilingual/base'
 
 /**
  * Filetype tranformer

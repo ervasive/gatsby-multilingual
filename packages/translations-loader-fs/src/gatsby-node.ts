@@ -6,12 +6,11 @@ import {
   GatsbyStorePlugin,
   TRANSLATION_NODE_TYPENAME,
   TranslationNodeInput,
-  translationTypedef,
+  Translations,
+  translationsSchema,
 } from '@gatsby-plugin-multilingual/base'
-import { translationsSchema } from './schemas'
 import { validatePluginInstance, getOptions } from './utils'
 import { PLUGIN_NAME } from './constants'
-import { Translations } from './types'
 
 /**
  * Validate plugin instance and its options
