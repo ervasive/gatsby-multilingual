@@ -24,7 +24,7 @@
     "access": "public"
   },
   "dependencies": {
-    "babel-plugin-react-intl": "^5.1.18"
+    "@hapi/joi": "^17.1.0"
   },
   "peerDependencies": {
     "gatsby": "^2.19.17",
