@@ -157,7 +157,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async ({
       } else {
         reporter.panicOnBuild(
           `[${PLUGIN_NAME}] Invalid messages file "${filepath}": Must be ` +
-            `array of message descriptiors`,
+            `array of message descriptors`,
         )
       }
     } catch (err) {
