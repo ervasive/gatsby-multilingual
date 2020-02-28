@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs'
+import { emptyDir, ensureDir } from 'fs-extra'
 import {
   GatsbyNode,
   CreateSchemaCustomizationArgs,
@@ -14,6 +15,7 @@ import {
 } from './schemas'
 import {
   PLUGIN_NAME,
+  CACHE_DIR,
   EXTRACTED_MESSAGES_DIR,
   MESSAGE_NODE_TYPENAME,
   TRANSLATION_NODE_TYPENAME,
@@ -59,7 +61,7 @@ export const onCreateBabelConfig: GatsbyNode['onCreateBabelConfig'] = ({
 /**
  * Validate plugin instance and its options
  */
-export const onPreBootstrap: GatsbyNode['onPreBootstrap'] = (
+export const onPreBootstrap: GatsbyNode['onPreBootstrap'] = async (
   { store, reporter },
   pluginOptions,
 ) => {
@@ -67,6 +69,9 @@ export const onPreBootstrap: GatsbyNode['onPreBootstrap'] = (
     store.getState().flattenedPlugins as GatsbyStorePlugin[],
     pluginOptions,
   ).mapErr(reporter.panic)
+
+  // Make sure we have a clean state for each run
+  await emptyDir(CACHE_DIR)
 }
 
 /**
