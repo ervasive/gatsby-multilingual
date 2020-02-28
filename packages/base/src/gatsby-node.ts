@@ -36,13 +36,16 @@ export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] 
 export const onCreateBabelConfig: GatsbyNode['onCreateBabelConfig'] = ({
   actions,
 }) => {
+  // We have to disable babel-loader caching so babel-plugin-intl could run
+  // messages extraction reliably in case EXTRACTED_MESSAGES_DIR gets deleted by
+  // "gatsby clean" for example.
+  // TODO: investigate the cons of this approach or find a better one
   actions.setBabelOptions({
     options: {
-      // TODO: find a way to invalidate babel-loader cache on non-existent
-      // messages dir
       cacheDirectory: false,
     },
   })
+
   actions.setBabelPlugin({
     name: 'babel-plugin-react-intl',
     options: {
