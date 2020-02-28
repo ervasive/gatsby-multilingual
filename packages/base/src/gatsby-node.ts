@@ -21,7 +21,7 @@ import {
 import { GatsbyStorePlugin, Message, MessageNodeInput } from './types'
 
 /**
- * Add additional types Gatsby’s GraphQL schema
+ * Add additional types to Gatsby’s GraphQL schema
  */
 export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = async ({
   actions,
