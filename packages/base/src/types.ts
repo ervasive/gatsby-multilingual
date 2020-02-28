@@ -47,6 +47,10 @@ export interface Translations {
   [id: string]: string
 }
 
+export interface TranslationsResource {
+  [language: string]: Translations
+}
+
 /**
  * Plugin from the gatsby store
  */

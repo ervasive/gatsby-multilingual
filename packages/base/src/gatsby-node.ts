@@ -14,13 +14,14 @@ import {
   messageDescriptorSchema,
 } from './schemas'
 import {
+  PREFIX,
   PLUGIN_NAME,
   CACHE_DIR,
   EXTRACTED_MESSAGES_DIR,
   MESSAGE_NODE_TYPENAME,
   TRANSLATION_NODE_TYPENAME,
 } from './constants'
-import { GatsbyStorePlugin, Message, MessageNodeInput } from './types'
+import { GatsbyStorePlugin, MessageNodeInput, Message } from './types'
 
 /**
  * Add additional types to Gatsby’s GraphQL schema
@@ -75,115 +76,130 @@ export const onPreBootstrap: GatsbyNode['onPreBootstrap'] = async (
 }
 
 /**
- * Add message nodes extracted from the source code by "babel-plugin-intl"
+ * Manage gatsby nodes for messages extracted from the source code by
+ * "babel-plugin-intl"
  */
 export const sourceNodes: GatsbyNode['sourceNodes'] = async ({
   actions,
   reporter,
+  getNode,
   createNodeId,
   createContentDigest,
-  getNode,
 }: SourceNodesArgs) => {
-  const managedNodes: Map<string, string[]> = new Map()
+  // We want to keep track which messages were extracted from which file to
+  // be able to sync gatsby store on files updates
+  const managedNodes: Map<string, Set<string>> = new Map()
 
   /**
-   * Remove previously created message nodes from gatsby
-   * @param filepath - Filepath to file to process
+   * Delete managed nodes of by provided key (filepath), excluding optional
+   * array of ids
+   *
+   * @param key - Filepath
+   * @param idsToKeep - Array of ids to keep from deletion
    */
-  const removeNodes = (filepath: string): void => {
-    const fileNodesIds = managedNodes.get(filepath)
+  const deleteNodes = (key: string, idsToKeep: string[] = []): void => {
+    const allIds = new Set(managedNodes.get(key))
 
-    if (fileNodesIds) {
-      fileNodesIds.forEach(id => {
-        const node = getNode(id)
+    allIds.forEach(id => {
+      const node = getNode(id)
 
-        if (node) {
-          actions.deleteNode({ node })
-        }
-      })
+      if (node && idsToKeep.indexOf(id) === -1) {
+        actions.deleteNode({ node })
+      }
+    })
 
-      managedNodes.delete(filepath)
-    }
+    managedNodes.set(key, new Set(idsToKeep))
   }
 
   /**
-   * Extract message descriptors from a file and create a node for each message
-   * @param filepath - Filepath to file to process
+   * Add message nodes from a file of extracted message descriptors
+   *
+   * @param filepath - Path to a file to process
    */
-  const addNodes = async (filepath: string): Promise<void> => {
-    const fileNodesIds: string[] = []
-
+  const processFile = async (filepath: string): Promise<void> => {
     try {
       const contents = await fs.readFile(filepath, 'utf8')
 
-      // Ignore empty file
+      // Remove all nodes associated with this filepath if the file is empty
       if (!contents) {
+        deleteNodes(filepath)
         return
       }
 
       const data = JSON.parse(contents)
 
-      if (Array.isArray(data)) {
-        data.forEach(item => {
-          const { error, value } = messageDescriptorSchema
-            .required()
-            .validate(item)
-
-          if (error) {
-            reporter.panicOnBuild(
-              [
-                `[${PLUGIN_NAME}] Invalid message descriptor found in file "${filepath}":`,
-                JSON.stringify(item, null, 2),
-                `Validation errors:`,
-                error.details.map(({ message }) => `- ${message}`).join('\n'),
-              ].join('\n'),
-            )
-
-            return
-          }
-
-          const message = value as Message
-          const nodeId = createNodeId(`${filepath}-${message.id}`)
-          const node: MessageNodeInput = {
-            id: nodeId,
-            internal: {
-              type: MESSAGE_NODE_TYPENAME,
-              contentDigest: createContentDigest(message.defaultMessage),
-            },
-            messageId: message.id,
-            value: message.defaultMessage,
-            file: message.file,
-            description: message.description,
-          }
-
-          actions.createNode(node)
-          fileNodesIds.push(nodeId)
-        })
-
-        // Update registered nodes for the filepath
-        managedNodes.set(filepath, fileNodesIds)
-      } else {
+      if (!Array.isArray(data)) {
         reporter.panicOnBuild(
-          `[${PLUGIN_NAME}] Invalid messages file "${filepath}": Must be ` +
+          `[${PLUGIN_NAME}] Invalid messages file "${filepath}": Must be an ` +
             `array of message descriptors`,
         )
+
+        deleteNodes(filepath)
+        return
       }
+
+      const messages = data as unknown[]
+      const fileNodes: MessageNodeInput[] = []
+
+      messages.forEach(item => {
+        const { error, value } = messageDescriptorSchema
+          .required()
+          .validate(item)
+
+        if (error) {
+          reporter.panicOnBuild(
+            [
+              `[${PLUGIN_NAME}] Invalid message descriptor found in file "${filepath}":`,
+              JSON.stringify(item, null, 2),
+              `Validation errors:`,
+              error.details.map(({ message }) => `- ${message}`).join('\n'),
+            ].join('\n'),
+          )
+
+          return
+        }
+
+        const message = value as Message
+        const nodeId = createNodeId(`${PREFIX}-${message.file}-${message.id}`)
+        const node: MessageNodeInput = {
+          id: nodeId,
+          internal: {
+            type: MESSAGE_NODE_TYPENAME,
+            contentDigest: createContentDigest(
+              message.defaultMessage + message.description + message.file,
+            ),
+          },
+          messageId: message.id,
+          value: message.defaultMessage,
+          file: message.file,
+          description: message.description,
+        }
+
+        actions.createNode(node)
+        fileNodes.push(node)
+      })
+
+      deleteNodes(
+        filepath,
+        fileNodes.map(({ id }) => id),
+      )
     } catch (err) {
       reporter.panicOnBuild(
-        `[${PLUGIN_NAME}] something went wrong while processing message ` +
-          `file "${filepath}"\n${err}`,
+        `[${PLUGIN_NAME}] there was an error processing messages file ` +
+          `"${filepath}": ${err}`,
       )
+
+      deleteNodes(filepath)
     }
   }
 
+  await ensureDir(EXTRACTED_MESSAGES_DIR)
+
   // TODO: should we handle "ready" state?
   watch(EXTRACTED_MESSAGES_DIR)
-    .on('add', addNodes)
-    .on('change', filepath => {
-      removeNodes(filepath)
-      addNodes(filepath)
-    })
-    .on('unlink', removeNodes)
+    .on('add', processFile)
+    .on('change', processFile)
+    .on('unlink', deleteNodes)
 }
 
 /**
@@ -193,6 +209,7 @@ export const onCreateNode: GatsbyNode['onCreateNode'] = async ({
   node,
   reporter,
 }) => {
+  console.log('node created', node)
   if (node.internal.type === MESSAGE_NODE_TYPENAME) {
     const { error } = messageNodeSchema.required().validate(node)
 
