@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.node.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "composite": true,
+    "paths": {
+      "gpml-translations": [
+        "stubs/translations"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "references": []
+}

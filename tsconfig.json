@@ -4,7 +4,14 @@
     },
     "include": [],
     "references": [
-        { "path": "./packages/base" },
-        { "path": "./packages/translations-loader-fs" }
+        {
+            "path": "./packages/base/tsconfig.node.json"
+        },
+        {
+            "path": "./packages/base/tsconfig.browser.json"
+        },
+        {
+            "path": "./packages/translations-loader-fs/tsconfig.node.json"
+        }
     ]
 }

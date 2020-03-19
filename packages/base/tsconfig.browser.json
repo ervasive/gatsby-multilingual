@@ -1,9 +1,10 @@
 {
-  "extends": "../../tsconfig.base",
+  "extends": "../../tsconfig.browser.json",
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": "./src",
+    "composite": true,
     "paths": {
       "gpml-translations": [
         "stubs/translations"
@@ -12,9 +13,6 @@
   },
   "include": [
     "src/**/*"
-  ],
-  "exclude": [
-    "src/**/__tests__/**/*"
   ],
   "references": []
 }
