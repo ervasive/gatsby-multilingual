@@ -24,19 +24,19 @@
     "access": "public"
   },
   "dependencies": {
-    "@hapi/joi": "^17.1.0",
-    "babel-plugin-react-intl": "^5.1.18",
+    "@hapi/joi": "^17.1.1",
+    "babel-plugin-react-intl": "^6.2.0",
     "chokidar": "^3.3.1",
     "lodash": "^4.17.15",
-    "react-intl": "^3.12.0",
+    "react-intl": "^4.1.1",
     "true-myth": "^4.0.0"
   },
   "peerDependencies": {
-    "gatsby": "^2.19.17",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "gatsby": "^2.19.45",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "devDependencies": {
-    "gatsby": "^2.19.17"
+    "gatsby": "^2.19.45"
   }
 }
