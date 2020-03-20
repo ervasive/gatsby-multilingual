@@ -50,6 +50,7 @@ export const onCreateBabelConfig: GatsbyNode['onCreateBabelConfig'] = ({
       messagesDir: EXTRACTED_MESSAGES_DIR,
       extractSourceLocation: true,
       extractFromFormatMessageCall: true,
+      outputEmptyJson: true,
     },
   })
 }
