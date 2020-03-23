@@ -1,13 +1,20 @@
 import { Node, NodeInput, PluginOptions } from 'gatsby'
 
+export interface Location {
+  line: number
+  column: number
+}
+
 /**
  * A bit strictier version of ExtractedMessageDescriptor (from babel-plugin-intl) type
  */
 export interface Message {
   id: string
   defaultMessage: string
-  file: string
   description?: string
+  file: string
+  start: Location
+  end: Location
 }
 
 /**
@@ -18,6 +25,8 @@ export interface MessageNodeInput extends NodeInput {
   value: string
   description?: string
   file: string
+  start?: Location
+  end?: Location
 }
 
 /**

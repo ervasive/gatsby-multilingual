@@ -1,3 +1,4 @@
+export * from './location'
 export * from './message-node'
 export * from './message-descriptor'
 export * from './options'

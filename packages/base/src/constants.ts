@@ -3,6 +3,7 @@ import { Options } from './types'
 
 export const PLUGIN_NAME = '@gatsby-plugin-multilingual/base'
 export const PREFIX = '__gpml'
+export const LOCATION_TYPENAME = 'GPMLLocation'
 export const MESSAGE_NODE_TYPENAME = 'GPMLMessage'
 export const TRANSLATION_NODE_TYPENAME = 'GPMLTranslation'
 export const DEBOUNCE_INTERVAL = 500

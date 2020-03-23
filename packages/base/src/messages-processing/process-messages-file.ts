@@ -81,8 +81,10 @@ export const processMesagesFile = async (
         },
         messageId: message.id,
         value: message.defaultMessage,
-        file: message.file,
         description: message.description,
+        file: message.file,
+        start: message.start,
+        end: message.end,
       }
 
       fileNodes.push(node)

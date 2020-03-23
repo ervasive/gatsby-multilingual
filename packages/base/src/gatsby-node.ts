@@ -5,8 +5,11 @@ import {
   SourceNodesArgs,
 } from 'gatsby'
 import { watch } from 'chokidar'
-import { messageTypedef, translationTypedef } from './graphql-types'
-import { validatePluginInstance } from './utils'
+import {
+  locationTypedef,
+  messageTypedef,
+  translationTypedef,
+} from './graphql-types'
 import { translationNodeSchema, messageNodeSchema } from './schemas'
 import { syncMessageNodes, processMesagesFile } from './messages-processing'
 import {
@@ -24,6 +27,7 @@ import { GatsbyStorePlugin, ManagedMessagesStore } from './types'
 export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = async ({
   actions,
 }: CreateSchemaCustomizationArgs) => {
+  actions.createTypes(locationTypedef)
   actions.createTypes(translationTypedef)
   actions.createTypes(messageTypedef)
 }
