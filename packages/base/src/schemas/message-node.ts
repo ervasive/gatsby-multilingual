@@ -12,7 +12,7 @@ export const messageNodeSchema = object
     messageId: string.required(),
     value: string.required(),
     description: string,
-    file: string.required(),
+    file: string,
     start: locationSchema,
     end: locationSchema,
     internal: object

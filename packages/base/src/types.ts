@@ -24,7 +24,7 @@ export interface MessageNodeInput extends NodeInput {
   messageId: string
   value: string
   description?: string
-  file: string
+  file?: string
   start?: Location
   end?: Location
 }

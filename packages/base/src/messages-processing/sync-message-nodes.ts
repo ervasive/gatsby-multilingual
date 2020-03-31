@@ -28,10 +28,9 @@ export const syncMessageNodes = (
 
   messagesNodes
     .filter(({ id, file }) => {
-      const messageFilepath = path.join(
-        EXTRACTED_MESSAGES_DIR,
-        file.replace('.js', '.json'),
-      )
+      const messageFilepath = file
+        ? path.join(EXTRACTED_MESSAGES_DIR, file.replace('.js', '.json'))
+        : ''
 
       return filepath === messageFilepath && !idsOfNodesToKeep.includes(id)
     })
