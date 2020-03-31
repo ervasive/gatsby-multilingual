@@ -116,13 +116,13 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async ({
 }
 
 /**
- * Validate message and translation nodes added to the store
+ * Validate added message and translation nodes
  */
 export const onCreateNode: GatsbyNode['onCreateNode'] = async ({
   node,
+  actions,
   reporter,
 }) => {
-  console.log('node created', node)
   if (node.internal.type === MESSAGE_NODE_TYPENAME) {
     const { error } = messageNodeSchema.required().validate(node)
 
@@ -135,6 +135,8 @@ export const onCreateNode: GatsbyNode['onCreateNode'] = async ({
           error.details.map(({ message }) => `- ${message}`).join('\n'),
         ].join('\n'),
       )
+
+      actions.deleteNode({ node })
     }
   }
 
@@ -150,6 +152,12 @@ export const onCreateNode: GatsbyNode['onCreateNode'] = async ({
           error.details.map(({ message }) => `- ${message}`).join('\n'),
         ].join('\n'),
       )
+
+      actions.deleteNode({ node })
+    }
+  }
+}
+
     }
   }
 }
