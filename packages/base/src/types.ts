@@ -83,8 +83,3 @@ export interface Options extends PluginOptions {
   availableLanguages: string[]
   includeDefaultLanguageInURL: boolean
 }
-
-/**
- * How we store "message nodes" to "extracted messages filename" dependencies
- */
-export type ManagedMessagesStore = Map<string, string[]>

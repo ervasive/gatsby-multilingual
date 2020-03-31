@@ -1,38 +1,39 @@
+import path from 'path'
 import { Actions, NodePluginArgs } from 'gatsby'
-import { MessageNodeInput, ManagedMessagesStore } from '../types'
+import { MESSAGE_NODE_TYPENAME, EXTRACTED_MESSAGES_DIR } from '../constants'
+import { MessageNodeInput, MessageNode } from '../types'
 
 /**
- * Sync message nodes with gatsby
+ * Updates message nodes in gatsby store
  *
- * @param key - Store key id (filepath)
- * @param store - Map of a filename to an array of existing node ids
- * @param nodes - Array of message nodes to create and keep from deletion
+ * @param filepath - Filepath
+ * @param nodes - Array of message nodes to create and/or keep from deletion
  * @param helpers - Miscellaneous helpers provided by gatsby
  */
 export const syncMessageNodes = (
-  key: string,
-  store: ManagedMessagesStore,
+  filepath: string,
   nodes: MessageNodeInput[],
   {
     actions,
-    getNode,
-  }: { actions: Actions; getNode: NodePluginArgs['getNode'] },
+    getNodesByType,
+  }: { actions: Actions; getNodesByType: NodePluginArgs['getNodesByType'] },
 ): void => {
-  const existingIds = store.get(key) || []
-  const newIds: string[] = []
+  const messagesNodes: MessageNode[] = getNodesByType(MESSAGE_NODE_TYPENAME)
+  const idsOfNodesToKeep: string[] = []
 
   nodes.forEach(node => {
     actions.createNode(node)
-    newIds.push(node.id)
+    idsOfNodesToKeep.push(node.id)
   })
 
-  existingIds.forEach(id => {
-    const node = getNode(id)
+  messagesNodes
+    .filter(({ id, file }) => {
+      const messageFilepath = path.join(
+        EXTRACTED_MESSAGES_DIR,
+        file.replace('.js', '.json'),
+      )
 
-    if (node && !newIds.includes(id)) {
-      actions.deleteNode({ node })
-    }
-  })
-
-  store.set(key, newIds)
+      return filepath === messageFilepath && !idsOfNodesToKeep.includes(id)
+    })
+    .map(node => actions.deleteNode({ node }))
 }

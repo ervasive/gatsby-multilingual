@@ -1,71 +1,55 @@
 import { promises as fs } from 'fs'
-import { Actions, Reporter, NodePluginArgs } from 'gatsby'
+import { Result } from 'true-myth'
+import { NodePluginArgs } from 'gatsby'
 import { messageDescriptorSchema } from '../schemas'
-import { syncMessageNodes } from '.'
-import { PREFIX, PLUGIN_NAME, MESSAGE_NODE_TYPENAME } from '../constants'
-import { Message, MessageNodeInput, ManagedMessagesStore } from '../types'
+import { Message, MessageNodeInput } from '../types'
+import { PLUGIN_NAME, PREFIX, MESSAGE_NODE_TYPENAME } from '../constants'
 
 /**
- * Get message nodes from a file of extracted message descriptors
+ * Get and validate message descriptors from a file, convert extracted
+ * descriptors into gatsby message nodes
  *
  * @param filepath - Path to a file to process
- * @param store - Map of a filename to an array of existing node ids
  * @param helpers - Miscellaneous helpers provided by gatsby
+ * @returns A promise which resolves to Result with "MessageNodeInput[]" on
+ *          success or "string" on failure
  */
 export const processMesagesFile = async (
   filepath: string,
-  store: ManagedMessagesStore,
   {
-    actions,
-    reporter,
-    getNode,
     createNodeId,
     createContentDigest,
   }: {
-    actions: Actions
-    reporter: Reporter
-    getNode: NodePluginArgs['getNode']
     createNodeId: NodePluginArgs['createNodeId']
     createContentDigest: NodePluginArgs['createContentDigest']
   },
-): Promise<void | never> => {
+): Promise<Result<MessageNodeInput[], string>> => {
   try {
     const contents = await fs.readFile(filepath, 'utf8')
 
-    // Remove all nodes associated with this filepath if the file is empty
+    // Skip processing if the file is empty
     if (!contents) {
-      syncMessageNodes(filepath, store, [], { actions, getNode })
-      return
+      return Result.ok([])
     }
 
     const data = JSON.parse(contents)
 
     if (!Array.isArray(data)) {
-      reporter.panicOnBuild(
-        `[${PLUGIN_NAME}] Invalid messages file "${filepath}": Must be an ` +
-          `array of message descriptors`,
+      return Result.err(
+        `[${PLUGIN_NAME}] Invalid messages file "${filepath}": must contain ` +
+          `an array of message descriptors`,
       )
-
-      syncMessageNodes(filepath, store, [], { actions, getNode })
-      return
     }
 
-    const messages = data as unknown[]
-    const fileNodes: MessageNodeInput[] = []
+    const items = data as unknown[]
+    const nodes: MessageNodeInput[] = []
+    let containsInvalidDesciptors = false
 
-    messages.forEach(item => {
+    items.forEach(item => {
       const { error, value } = messageDescriptorSchema.required().validate(item)
 
-      if (error) {
-        reporter.panicOnBuild(
-          [
-            `[${PLUGIN_NAME}] Invalid message descriptor found in file "${filepath}":`,
-            JSON.stringify(item, null, 2),
-            `Validation errors:`,
-            error.details.map(({ message }) => `- ${message}`).join('\n'),
-          ].join('\n'),
-        )
-
+      if (error || containsInvalidDesciptors) {
+        containsInvalidDesciptors = true
         return
       }
 
@@ -87,16 +71,20 @@ export const processMesagesFile = async (
         end: message.end,
       }
 
-      fileNodes.push(node)
+      nodes.push(node)
     })
 
-    syncMessageNodes(filepath, store, fileNodes, { actions, getNode })
-  } catch (err) {
-    reporter.panicOnBuild(
-      `[${PLUGIN_NAME}] there was an error processing messages file ` +
-        `"${filepath}": ${err}`,
-    )
+    if (containsInvalidDesciptors) {
+      return Result.err(
+        `[${PLUGIN_NAME}] Messages file "${filepath}" contains invalid ` +
+          `message descriptors`,
+      )
+    }
 
-    syncMessageNodes(filepath, store, [], { actions, getNode })
+    return Result.ok(nodes)
+  } catch (err) {
+    return Result.err(
+      `[${PLUGIN_NAME}] Invalid messages file "${filepath}": ${err.message}`,
+    )
   }
 }

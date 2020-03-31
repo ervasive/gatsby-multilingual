@@ -19,7 +19,7 @@ import {
   MESSAGE_NODE_TYPENAME,
   TRANSLATION_NODE_TYPENAME,
 } from './constants'
-import { GatsbyStorePlugin, ManagedMessagesStore } from './types'
+import { GatsbyStorePlugin } from './types'
 
 /**
  * Add additional types to Gatsby’s GraphQL schema
@@ -82,38 +82,36 @@ export const onPreBootstrap: GatsbyNode['onPreBootstrap'] = async (
 export const sourceNodes: GatsbyNode['sourceNodes'] = async ({
   actions,
   reporter,
-  getNode,
+  getNodesByType,
   createNodeId,
   createContentDigest,
 }: SourceNodesArgs) => {
-  // We want to keep track which messages were extracted from which file to
-  // be able to sync gatsby store on files updates
-  const managedNodes: ManagedMessagesStore = new Map()
-
   await ensureDir(EXTRACTED_MESSAGES_DIR)
 
-  // TODO: should we handle "ready" state?
-  watch(EXTRACTED_MESSAGES_DIR)
-    .on('add', filename => {
-      processMesagesFile(filename, managedNodes, {
-        actions,
-        reporter,
-        getNode,
+  // TODO: ignore dashboard messages
+  watch(EXTRACTED_MESSAGES_DIR).on('all', async (e, filename) => {
+    if (e === 'add' || e === 'change') {
+      const result = await processMesagesFile(filename, {
         createNodeId,
         createContentDigest,
       })
-    })
-    .on('change', filename => {
-      processMesagesFile(filename, managedNodes, {
+
+      result
+        .map(nodes => {
+          syncMessageNodes(filename, nodes, {
         actions,
-        reporter,
-        getNode,
-        createNodeId,
-        createContentDigest,
+            getNodesByType,
+          })
       })
+        .mapErr(error => {
+          reporter.panicOnBuild(error)
+          syncMessageNodes(filename, [], { actions, getNodesByType })
     })
-    .on('unlink', filename => {
-      syncMessageNodes(filename, managedNodes, [], { actions, getNode })
+    }
+
+    if (e === 'unlink') {
+      syncMessageNodes(filename, [], { actions, getNodesByType })
+    }
     })
 }
 
