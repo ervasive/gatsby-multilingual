@@ -10,6 +10,7 @@ import {
   messageTypedef,
   translationTypedef,
 } from './graphql-types'
+import { validatePluginInstance, getOptions } from './utils'
 import { translationNodeSchema, messageNodeSchema } from './schemas'
 import { syncMessageNodes, processMesagesFile } from './messages-processing'
 import {
