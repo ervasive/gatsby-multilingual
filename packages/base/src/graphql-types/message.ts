@@ -5,7 +5,7 @@ export const messageTypedef = `
     messageId: String!
     value: String!
     description: String
-    file: String!
+    file: String
     start: ${LOCATION_TYPENAME}
     end: ${LOCATION_TYPENAME}
   }
