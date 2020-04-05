@@ -40,7 +40,7 @@ export type MessageNode = Node & MessageNodeInput
 export interface TranslationNodeInput extends NodeInput {
   messageId: string
   value: string
-  language: string
+  locale: string
   priority: number
 }
 
@@ -57,7 +57,7 @@ export interface Translations {
 }
 
 export interface TranslationsResource {
-  [language: string]: Translations
+  [locale: string]: Translations
 }
 
 /**
@@ -76,10 +76,20 @@ export interface GatsbyStorePlugin {
 }
 
 /**
+ * Locale object
+ *   id - Unicode locale identifier (ex. en-Latn-US)
+ *   displayValue - What should be displayed in the URL (ex. en)
+ */
+export interface Locale {
+  id: string
+  displayValue: string
+}
+
+/**
  * Plugin options
  */
 export interface Options extends PluginOptions {
-  defaultLanguage: string
-  availableLanguages: string[]
-  includeDefaultLanguageInURL: boolean
+  defaultLocale: Locale
+  availableLocales: Locale[]
+  includeDefaultLocaleInURL: boolean
 }

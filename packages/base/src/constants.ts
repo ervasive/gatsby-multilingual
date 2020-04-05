@@ -16,8 +16,8 @@ export const EXTRACTED_MESSAGES_DIR = path.join(CACHE_DIR, 'messages')
 export const TRANSLATIONS_FILE = path.join(CACHE_DIR, 'translations.json')
 
 export const DEFAULT_OPTIONS: Options = {
-  defaultLanguage: 'en',
-  availableLanguages: ['en'],
-  includeDefaultLanguageInURL: false,
+  defaultLocale: { id: 'en-US', displayValue: 'en' },
+  availableLocales: [],
+  includeDefaultLocaleInURL: false,
   plugins: [],
 }

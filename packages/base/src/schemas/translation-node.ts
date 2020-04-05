@@ -10,7 +10,7 @@ export const translationNodeSchema = object
   .keys({
     messageId: string.required(),
     value: string.required(),
-    language: string.required(),
+    locale: string.required(),
     priority: number.required(),
     internal: object
       .keys({

@@ -1,3 +1,4 @@
+export * from './locale'
 export * from './location'
 export * from './message-node'
 export * from './message-descriptor'

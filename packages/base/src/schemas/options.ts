@@ -1,13 +1,14 @@
 import Joi from '@hapi/joi'
+import { localeSchema } from '.'
 
-const { boolean, string, array, object } = Joi.types()
+const { boolean, array, object } = Joi.types()
 
 /**
  * Validation schema for the plugin's options
  */
 export const optionsSchema = object.keys({
-  defaultLanguage: string,
-  availableLanguages: array.items(string),
+  defaultLocale: localeSchema,
+  availableLocales: array.items(localeSchema),
   includeDefaultLanguageInURL: boolean,
   plugins: array,
 })

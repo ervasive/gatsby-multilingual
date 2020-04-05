@@ -51,7 +51,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     const fileNodesIds = managedNodes.get(filepath)
 
     if (fileNodesIds) {
-      fileNodesIds.forEach(id => {
+      fileNodesIds.forEach((id) => {
         const node = getNode(id)
 
         if (node) {
@@ -69,7 +69,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
    */
   const addNodes = async (filepath: string): Promise<void> => {
     const ext = path.extname(filepath).replace(/^\.+/, '')
-    const language = path.parse(filepath).name
+    const locale = path.parse(filepath).name
     const fileNodesIds: string[] = []
 
     options.transformers.forEach(async ({ extensions, handler }) => {
@@ -111,7 +111,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
             },
             messageId: id,
             value,
-            language,
+            locale,
             priority: options.priority,
           }
 
@@ -132,7 +132,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   // TODO: should we handle "ready" state?
   watch(pathResolved)
     .on('add', addNodes)
-    .on('change', filepath => {
+    .on('change', (filepath) => {
       removeNodes(filepath)
       addNodes(filepath)
     })
