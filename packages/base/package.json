@@ -27,7 +27,7 @@
     "@hapi/joi": "^17.1.1",
     "babel-plugin-react-intl": "^7.1.0",
     "chokidar": "^3.3.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "react-intl": "^4.3.1",
     "true-myth": "^4.0.0"
   },
